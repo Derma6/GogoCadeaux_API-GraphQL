@@ -1,0 +1,205 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Address model"""
+type Address {
+  apartment: String!
+  city: String!
+  country: String!
+  id: Float!
+  label: String!
+  number: Float!
+  postalCode: Float!
+  street: String!
+  user: User!
+}
+
+"""Article model"""
+type Article {
+  description: String!
+  href: String!
+  id: Float!
+  indicativePrice: String!
+  isOffered: Boolean!
+  isOfferedBy: String!
+  list: List!
+  name: String!
+  picture: String!
+}
+
+"""Create article input"""
+input CreateArticleInputType {
+  description: String!
+  href: String!
+  indicativePrice: String
+  listId: Float!
+  name: String!
+  picture: String!
+}
+
+"""Create list input"""
+input CreateListInput {
+  description: String!
+  event: EventEnumType!
+  eventDate: DateTime!
+  hideOfferedGifts: Boolean!
+  isPrivate: Boolean!
+  title: String!
+}
+
+"""Create user input"""
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  photo: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum EventEnumType {
+  BAPTISM
+  BIRTH
+  BIRTHDAY
+  CHRISTMAS
+  HOUSEWARMING
+  OTHER
+  WEDDING
+}
+
+"""List model"""
+type List {
+  address: Address!
+  articles: [Article!]!
+  createdAt: DateTime!
+  description: String!
+  event: EventEnumType!
+  eventDate: DateTime!
+  hideOfferedGifts: Boolean!
+  id: Float!
+  isPrivate: Boolean!
+  title: String!
+  updatedAt: DateTime!
+  userToLists: [UserToList!]!
+}
+
+"""Login input"""
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+"""Login response"""
+type LoginResponse {
+  access_token: String!
+  user: User!
+}
+
+type Mutation {
+  createArticle(createArticleInput: CreateArticleInputType!): Article!
+  createList(createListInput: CreateListInput!): List!
+  createUser(createUserInput: CreateUserInput!): User!
+  login(loginInput: LoginInput!): LoginResponse!
+  offerArticle(setOfferedArticleInput: SetOfferedArticleInputType!): Article!
+  register(registerInput: RegisterInput!): User!
+  removeArticle(id: Int!): Article!
+  removeList(id: Int!): List!
+  removeUser(id: Int!): User!
+  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
+  updateList(updateListInput: UpdateListInput!): List!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
+type Query {
+  article(id: Int!): Article!
+  articles: [Article!]!
+  list(id: Int!): List!
+  lists: [List!]!
+  profile: User!
+  user(id: String!): User!
+  users: [User!]!
+}
+
+"""Register input"""
+input RegisterInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  photo: String!
+}
+
+enum RoleEnumType {
+  ADMIN
+  USER
+}
+
+"""Set article is offered input"""
+input SetOfferedArticleInputType {
+  id: Int!
+  isOffered: Boolean!
+  isOfferedBy: String!
+}
+
+"""Update article input"""
+input UpdateArticleInput {
+  description: String
+  href: String
+  id: Int!
+  indicativePrice: String
+  listId: Float
+  name: String
+  picture: String
+}
+
+"""Update list input"""
+input UpdateListInput {
+  description: String
+  event: EventEnumType
+  eventDate: DateTime
+  hideOfferedGifts: Boolean
+  id: Int!
+  isPrivate: Boolean
+  title: String
+}
+
+"""Update user input"""
+input UpdateUserInput {
+  email: String
+  firstName: String
+  id: String!
+  lastName: String
+  password: String
+  photo: String
+}
+
+"""User model"""
+type User {
+  address: [Address!]!
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  id: ID!
+  isVerified: Boolean!
+  lastName: String!
+  photo: String!
+  role: RoleEnumType!
+  updatedAt: DateTime!
+  userToLists: [UserToList!]!
+  verificationCode: String!
+}
+
+"""UserToList model"""
+type UserToList {
+  id: Float!
+  isOwner: Boolean!
+  list: List!
+  listId: Float!
+  user: User!
+  userId: String!
+}

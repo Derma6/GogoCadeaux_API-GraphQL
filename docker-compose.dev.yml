@@ -1,0 +1,53 @@
+version: '3'
+services:
+  db:
+    image: 'postgres'
+    restart: always
+    env_file:
+      - .env.development
+    #    environment:
+    #      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    #      POSTGRES_DB: ${DATABASE_NAME}
+    #      PGDATA: ${PGDATA}
+    #      TZ: ${POSTGRES_TZ}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ../db:/var/lib/postgresql/data
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api:
+    container_name: api-graphql
+    build: .
+    ports:
+      - 8080:8080
+    command: yarn start:dev
+    volumes:
+      - ./src:/api/src
+    restart: always
+    healthcheck:
+      test: [ 'CMD-SHELL', 'curl http://localhost:8080/health || exit 1' ]
+      interval: 5s
+      timeout: 60s
+      retries: 10
+    depends_on:
+      db:
+        condition: service_healthy
+
+#  frontend:
+#    container_name: next-web-app
+#    build: ../web-app
+#    ports:
+#      - 3000:3000
+#    command: yarn run dev
+#    volumes:
+#      - ../web-app/:/app/
+#      - /usr/src/app/node_modules
+#    restart: always
+#    depends_on:
+#      'api':
+#        condition: service_healthy
