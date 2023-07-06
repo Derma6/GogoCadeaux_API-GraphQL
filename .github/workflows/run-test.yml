@@ -15,7 +15,7 @@
           uses: actions/checkout@v3
 
         - name: Install Dependencies
-          run: yarn install && yarn run test
+          run: yarn install
 
         - name: Run Tests
           run: yarn test
