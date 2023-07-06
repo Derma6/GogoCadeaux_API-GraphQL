@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { EventEnumType } from '../entities/list.entity';
+import { EventTypeEnum } from '../entities/list.entity';
 
 @InputType('CreateListInput', { description: 'Create list input' })
 export class CreateListInput {
@@ -12,8 +12,8 @@ export class CreateListInput {
   @Field(() => Date)
   eventDate: Date;
 
-  @Field(() => EventEnumType)
-  event: EventEnumType;
+  @Field(() => EventTypeEnum)
+  event: EventTypeEnum;
 
   @Field(() => Boolean)
   isPrivate: boolean;

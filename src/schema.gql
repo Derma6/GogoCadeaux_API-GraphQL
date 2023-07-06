@@ -18,21 +18,22 @@ type Address {
 """Article model"""
 type Article {
   description: String!
-  href: String!
   id: Float!
-  indicativePrice: String!
+  indicativePrice: String
   isOffered: Boolean!
-  isOfferedBy: String!
+  isOfferedBy: String
+  link: String!
   list: List!
   name: String!
+  partner: Partner!
   picture: String!
 }
 
 """Create article input"""
 input CreateArticleInputType {
   description: String!
-  href: String!
   indicativePrice: String
+  link: String!
   listId: Float!
   name: String!
   picture: String!
@@ -41,20 +42,11 @@ input CreateArticleInputType {
 """Create list input"""
 input CreateListInput {
   description: String!
-  event: EventEnumType!
+  event: EventTypeEnum!
   eventDate: DateTime!
   hideOfferedGifts: Boolean!
   isPrivate: Boolean!
   title: String!
-}
-
-"""Create user input"""
-input CreateUserInput {
-  email: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  photo: String!
 }
 
 """
@@ -62,12 +54,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-enum EventEnumType {
+enum EventTypeEnum {
   BAPTISM
   BIRTH
   BIRTHDAY
   CHRISTMAS
-  HOUSEWARMING
+  GIFT
+  HOUSE_WARMING
   OTHER
   WEDDING
 }
@@ -78,7 +71,7 @@ type List {
   articles: [Article!]!
   createdAt: DateTime!
   description: String!
-  event: EventEnumType!
+  event: EventTypeEnum!
   eventDate: DateTime!
   hideOfferedGifts: Boolean!
   id: Float!
@@ -101,26 +94,37 @@ type LoginResponse {
 }
 
 type Mutation {
-  createArticle(createArticleInput: CreateArticleInputType!): Article!
-  createList(createListInput: CreateListInput!): List!
-  createUser(createUserInput: CreateUserInput!): User!
+  createArticle(createArticleInput: CreateArticleInputType!): String!
+  createList(createListInput: CreateListInput!): String!
   login(loginInput: LoginInput!): LoginResponse!
-  offerArticle(setOfferedArticleInput: SetOfferedArticleInputType!): Article!
+  offerArticle(setOfferedArticleInput: SetOfferedArticleInputType!): String!
   register(registerInput: RegisterInput!): User!
-  removeArticle(id: Int!): Article!
-  removeList(id: Int!): List!
-  removeUser(id: Int!): User!
-  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
-  updateList(updateListInput: UpdateListInput!): List!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeArticle(id: Int!): String!
+  removeList(id: Int!): String!
+  removeUser: String!
+  updateArticle(updateArticleInput: UpdateArticleInput!): String!
+  updateList(updateListInput: UpdateListInput!): String!
+  updateUser(updateUserInput: UpdateUserInput!): String!
+  verifyEmail(verificationCode: String!): String!
+}
+
+"""Partner model"""
+type Partner {
+  affiliateCode: String!
+  affiliateParams: String!
+  baseUrl: String!
+  id: Float!
+  logoUrl: String!
+  name: String!
 }
 
 type Query {
   article(id: Int!): Article!
-  articles: [Article!]!
+  findMyLists: [List!]!
   list(id: Int!): List!
   lists: [List!]!
   profile: User!
+  searchUsersByName(searchTerm: String!): [User!]!
   user(id: String!): User!
   users: [User!]!
 }
@@ -149,9 +153,9 @@ input SetOfferedArticleInputType {
 """Update article input"""
 input UpdateArticleInput {
   description: String
-  href: String
   id: Int!
   indicativePrice: String
+  link: String
   listId: Float
   name: String
   picture: String
@@ -160,7 +164,7 @@ input UpdateArticleInput {
 """Update list input"""
 input UpdateListInput {
   description: String
-  event: EventEnumType
+  event: EventTypeEnum
   eventDate: DateTime
   hideOfferedGifts: Boolean
   id: Int!
@@ -172,7 +176,6 @@ input UpdateListInput {
 input UpdateUserInput {
   email: String
   firstName: String
-  id: String!
   lastName: String
   password: String
   photo: String

@@ -28,8 +28,13 @@ export class AuthResolver {
     return this.authService.register(registerInput);
   }
 
-  @Query(() => User, { name: 'profile' })
+  @Mutation(() => String)
+  verifyEmail(@Args('verificationCode') verificationCode: string) {
+    return this.authService.verifyEmail(verificationCode);
+  }
+
   @UseGuards(JwtAuthGuard)
+  @Query(() => User, { name: 'profile' })
   profile(@CurrentUser() user: User) {
     return this.usersService.findOneByEmail(user.email);
   }

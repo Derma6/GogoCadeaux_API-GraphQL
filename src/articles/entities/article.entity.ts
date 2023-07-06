@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { List } from '../../lists/entities/list.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Partner } from '../../partner/entities/partner.entity';
 
 @Entity('articles')
 @ObjectType('Article', { description: 'Article model' })
@@ -21,7 +22,7 @@ export class Article {
     nullable: true,
     default: null,
   })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   indicativePrice: string;
 
   @Column({
@@ -31,9 +32,10 @@ export class Article {
   isOffered: boolean;
 
   @Column({
+    nullable: true,
     default: null,
   })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   isOfferedBy: string;
 
   @Column({
@@ -48,9 +50,13 @@ export class Article {
     length: 512,
   })
   @Field(() => String)
-  href: string;
+  link: string;
 
   @ManyToOne(() => List, (list) => list.articles, { onDelete: 'CASCADE' })
   @Field(() => List)
   list: List;
+
+  @ManyToOne(() => Partner)
+  @Field(() => Partner)
+  partner: Partner;
 }
