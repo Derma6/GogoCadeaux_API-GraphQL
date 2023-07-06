@@ -13,18 +13,19 @@ import { Address } from '../../addresses/entities/address.entity';
 import { UserToList } from '../../customJoinTable/userToList.entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
-export enum EventEnumType {
-  BIRTH = 'birth',
-  BIRTHDAY = 'birthday',
-  CHRISTMAS = 'christmas',
-  WEDDING = 'wedding',
-  BAPTISM = 'baptism',
-  HOUSEWARMING = 'housewarming',
-  OTHER = 'other',
+export enum EventTypeEnum {
+  BIRTH = 'BIRTH',
+  BIRTHDAY = 'BIRTHDAY',
+  CHRISTMAS = 'CHRISTMAS',
+  WEDDING = 'WEDDING',
+  BAPTISM = 'BAPTISM',
+  HOUSE_WARMING = 'HOUSE_WARMING',
+  OTHER = 'OTHER',
+  GIFT = 'GIFT',
 }
 
-registerEnumType(EventEnumType, {
-  name: 'EventEnumType',
+registerEnumType(EventTypeEnum, {
+  name: 'EventTypeEnum',
 });
 
 @Entity('lists')
@@ -48,10 +49,10 @@ export class List {
 
   @Column({
     type: 'enum',
-    enum: EventEnumType,
+    enum: EventTypeEnum,
   })
-  @Field(() => EventEnumType)
-  event: EventEnumType;
+  @Field(() => EventTypeEnum)
+  event: EventTypeEnum;
 
   @Column({
     default: false,
