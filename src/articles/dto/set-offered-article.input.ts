@@ -10,6 +10,6 @@ export class SetOfferedArticleInput {
   @Field(() => Boolean)
   isOffered: boolean;
 
-  @Field(() => String)
-  isOfferedBy: string;
+  @Field(() => String || undefined)
+  isOfferedBy: string | undefined;
 }

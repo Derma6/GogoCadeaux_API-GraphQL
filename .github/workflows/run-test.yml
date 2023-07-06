@@ -1,0 +1,21 @@
+  on:
+    pull_request:
+      branches: [ main, staging ]
+
+  jobs:
+    test: # This name will be used in the workflow visualization
+      runs-on: ubuntu-latest
+      steps:
+        - name: "Create env.test file"
+          run: |
+            touch .env.test
+            echo "${{ secrets.TEST_ENV_FILE }}" > .env.test
+
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+
+        - name: Install Dependencies
+          run: yarn install && yarn run test
+
+        - name: Run Tests
+          run: yarn test

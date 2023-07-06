@@ -67,7 +67,7 @@ export class AuthService {
     };
   }
 
-  async register(registerInput: RegisterInput): Promise<any> {
+  async register(registerInput: RegisterInput) {
     const userExists = await this.usersService.findOneByEmail(
       registerInput.email,
     );
@@ -78,7 +78,7 @@ export class AuthService {
     return await this.usersService.create(registerInput);
   }
 
-  async verifyEmail({ verificationCode }: { verificationCode: string }) {
+  async verifyEmail(verificationCode: string) {
     const decoded = this.jwtService.verify(verificationCode, {
       secret: this.configService.get('VERIFICATION_TOKEN_SECRET'),
     });
@@ -91,8 +91,6 @@ export class AuthService {
 
     await this.usersService.setUserVerified(user.id);
 
-    return {
-      message: 'Email verified',
-    };
+    return 'Email verified';
   }
 }

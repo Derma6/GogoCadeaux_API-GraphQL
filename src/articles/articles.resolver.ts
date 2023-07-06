@@ -4,21 +4,22 @@ import { Article } from './entities/article.entity';
 import { CreateArticleInput } from './dto/create-article.input';
 import { UpdateArticleInput } from './dto/update-article.input';
 import { SetOfferedArticleInput } from './dto/set-offered-article.input';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { CurrentUser } from '../customDecorator/current-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Resolver(() => Article)
 export class ArticlesResolver {
   constructor(private readonly articlesService: ArticlesService) {}
 
-  @Mutation(() => Article)
+  @Mutation(() => String)
+  @UseGuards(JwtAuthGuard)
   createArticle(
     @Args('createArticleInput') createArticleInput: CreateArticleInput,
+    @CurrentUser() user: User,
   ) {
-    return this.articlesService.create(createArticleInput);
-  }
-
-  @Query(() => [Article], { name: 'articles' })
-  findAll() {
-    return this.articlesService.findAll();
+    return this.articlesService.create(createArticleInput, user);
   }
 
   @Query(() => Article, { name: 'article' })
@@ -26,29 +27,33 @@ export class ArticlesResolver {
     return this.articlesService.findOne(id);
   }
 
-  @Mutation(() => Article)
+  @Mutation(() => String)
+  @UseGuards(JwtAuthGuard)
   updateArticle(
     @Args('updateArticleInput') updateArticleInput: UpdateArticleInput,
+    @CurrentUser() user: User,
   ) {
     return this.articlesService.update(
       updateArticleInput.id,
       updateArticleInput,
+      user,
     );
   }
 
-  @Mutation(() => Article)
+  @Mutation(() => String)
   offerArticle(
     @Args('setOfferedArticleInput')
     setOfferedArticleInput: SetOfferedArticleInput,
   ) {
-    return this.articlesService.update(
-      setOfferedArticleInput.id,
-      setOfferedArticleInput,
-    );
+    return this.articlesService.setOffered(setOfferedArticleInput);
   }
 
-  @Mutation(() => Article)
-  removeArticle(@Args('id', { type: () => Int }) id: number) {
-    return this.articlesService.remove(id);
+  @Mutation(() => String)
+  @UseGuards(JwtAuthGuard)
+  removeArticle(
+    @Args('id', { type: () => Int }) id: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.articlesService.remove(id, user);
   }
 }

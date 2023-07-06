@@ -15,7 +15,7 @@ export class CreateArticleInput {
   picture: string;
 
   @Field(() => String)
-  href: string;
+  link: string;
 
   @Field(() => Number)
   listId: number;

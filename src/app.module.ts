@@ -15,6 +15,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule, PassportStrategy } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { PartnerModule } from './partner/partner.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { JwtModule } from '@nestjs/jwt';
     ArticlesModule,
     AddressesModule,
     AuthModule,
+    PartnerModule,
   ],
   providers: [AuthResolver, AuthService],
 })
