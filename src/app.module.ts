@@ -2,26 +2,31 @@ import { Module } from '@nestjs/common';
 import { ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
-import { UsersModule } from './users/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UsersModule } from '@infra/users/users.module';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { HealthModule } from './health/health.module';
+import { HealthModule } from '@infra/health/health.module';
+import { ListsModule } from '@infra/lists/lists.module';
+import { ArticlesModule } from '@infra/articles/articles.module';
+import { AddressesModule } from '@infra/addresses/addresses.module';
+import { AuthModule } from '@infra/auth/auth.module';
+import { PartnerModule } from '@infra/partners/partner.module';
+import { EnvironmentConfigModule } from '@/infra/config/environment-config/environment-config.module';
+import { LoggerModule } from '@/infra/logger/logger.module';
+import { ConfigModule } from '@nestjs/config';
+import {
+  getTypeOrmModuleOptions,
+  TypeOrmConfigModule,
+} from '@infra/config/typeorm/typeorm.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ListsModule } from './lists/lists.module';
-import { ArticlesModule } from './articles/articles.module';
-import { AddressesModule } from './addresses/addresses.module';
-import { AuthResolver } from './auth/auth.resolver';
-import { AuthService } from './auth/auth.service';
-import { AuthModule } from './auth/auth.module';
-import { PassportModule, PassportStrategy } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
+import { EnvironmentConfigService } from '@infra/config/environment-config/environment-config.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: [`.env.${process.env.NODE_ENV}`],
       isGlobal: true,
     }),
+    EnvironmentConfigModule,
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       playground: false,
@@ -34,18 +39,9 @@ import { JwtModule } from '@nestjs/jwt';
       },
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get('POSTGRES_PORT'),
-        username: configService.get('POSTGRES_USERNAME'),
-        password: configService.get('POSTGRES_PASSWORD'),
-        database: configService.get('POSTGRES_DB'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
-      }),
-      inject: [ConfigService],
+      imports: [EnvironmentConfigModule],
+      inject: [EnvironmentConfigService],
+      useFactory: getTypeOrmModuleOptions,
     }),
     HealthModule,
     UsersModule,
@@ -53,7 +49,8 @@ import { JwtModule } from '@nestjs/jwt';
     ArticlesModule,
     AddressesModule,
     AuthModule,
+    PartnerModule,
+    LoggerModule,
   ],
-  providers: [AuthResolver, AuthService],
 })
 export class AppModule {}

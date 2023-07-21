@@ -18,21 +18,22 @@ type Address {
 """Article model"""
 type Article {
   description: String!
-  href: String!
   id: Float!
-  indicativePrice: String!
+  indicativePrice: String
   isOffered: Boolean!
-  isOfferedBy: String!
+  isOfferedBy: String
+  link: String!
   list: List!
   name: String!
+  partner: Partner!
   picture: String!
 }
 
 """Create article input"""
 input CreateArticleInputType {
   description: String!
-  href: String!
   indicativePrice: String
+  link: String!
   listId: Float!
   name: String!
   picture: String!
@@ -41,20 +42,11 @@ input CreateArticleInputType {
 """Create list input"""
 input CreateListInput {
   description: String!
-  event: EventEnumType!
+  event: EventTypeEnum!
   eventDate: DateTime!
   hideOfferedGifts: Boolean!
   isPrivate: Boolean!
   title: String!
-}
-
-"""Create user input"""
-input CreateUserInput {
-  email: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  photo: String!
 }
 
 """
@@ -62,12 +54,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-enum EventEnumType {
+enum EventTypeEnum {
   BAPTISM
   BIRTH
   BIRTHDAY
   CHRISTMAS
-  HOUSEWARMING
+  GIFT
+  HOUSE_WARMING
   OTHER
   WEDDING
 }
@@ -78,7 +71,7 @@ type List {
   articles: [Article!]!
   createdAt: DateTime!
   description: String!
-  event: EventEnumType!
+  event: EventTypeEnum!
   eventDate: DateTime!
   hideOfferedGifts: Boolean!
   id: Float!
@@ -94,44 +87,49 @@ input LoginInput {
   password: String!
 }
 
-"""Login response"""
-type LoginResponse {
-  access_token: String!
+"""Login output"""
+type LoginOutput {
+  accessToken: String!
   user: User!
 }
 
 type Mutation {
-  createArticle(createArticleInput: CreateArticleInputType!): Article!
+  createArticle(createArticleInput: CreateArticleInputType!): String!
   createList(createListInput: CreateListInput!): List!
-  createUser(createUserInput: CreateUserInput!): User!
-  login(loginInput: LoginInput!): LoginResponse!
-  offerArticle(setOfferedArticleInput: SetOfferedArticleInputType!): Article!
-  register(registerInput: RegisterInput!): User!
-  removeArticle(id: Int!): Article!
-  removeList(id: Int!): List!
-  removeUser(id: Int!): User!
-  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
-  updateList(updateListInput: UpdateListInput!): List!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  deleteArticle(id: Int!): String!
+  deleteList(id: Int!): String!
+  deleteUser: String!
+  login(loginInput: LoginInput!): LoginOutput!
+  offerArticle(setOfferedArticleInput: SetArticleOfferedInputType!): String!
+  register(registerInput: RegisterUserInput!): User!
+  updateArticle(updateArticleInput: UpdateArticleInput!): String!
+  updateList(updateListInput: UpdateListInput!): String!
+  updateUser(updateUserInput: UpdateUserInput!): String!
+  verifyEmail(verificationCode: String!): String!
+}
+
+"""Partner model"""
+type Partner {
+  affiliateCode: String!
+  affiliateParams: String!
+  baseUrl: String!
+  id: Float!
+  logoUrl: String!
+  name: String!
 }
 
 type Query {
-  article(id: Int!): Article!
-  articles: [Article!]!
+  getAllLists: [List!]!
+  getLoggedUserLists: [List!]!
   list(id: Int!): List!
-  lists: [List!]!
-  profile: User!
-  user(id: String!): User!
-  users: [User!]!
 }
 
-"""Register input"""
-input RegisterInput {
+"""Register user input"""
+input RegisterUserInput {
   email: String!
   firstName: String!
   lastName: String!
   password: String!
-  photo: String!
 }
 
 enum RoleEnumType {
@@ -140,18 +138,18 @@ enum RoleEnumType {
 }
 
 """Set article is offered input"""
-input SetOfferedArticleInputType {
+input SetArticleOfferedInputType {
   id: Int!
   isOffered: Boolean!
   isOfferedBy: String!
 }
 
-"""Update article input"""
+"""Update articles input"""
 input UpdateArticleInput {
   description: String
-  href: String
   id: Int!
   indicativePrice: String
+  link: String
   listId: Float
   name: String
   picture: String
@@ -160,7 +158,7 @@ input UpdateArticleInput {
 """Update list input"""
 input UpdateListInput {
   description: String
-  event: EventEnumType
+  event: EventTypeEnum
   eventDate: DateTime
   hideOfferedGifts: Boolean
   id: Int!
@@ -168,14 +166,12 @@ input UpdateListInput {
   title: String
 }
 
-"""Update user input"""
+"""Update users input"""
 input UpdateUserInput {
   email: String
   firstName: String
-  id: String!
   lastName: String
   password: String
-  photo: String
 }
 
 """User model"""
@@ -185,13 +181,13 @@ type User {
   email: String!
   firstName: String!
   id: ID!
-  isVerified: Boolean!
+  isEmailVerified: Boolean!
   lastName: String!
-  photo: String!
+  photo: String
   role: RoleEnumType!
   updatedAt: DateTime!
-  userToLists: [UserToList!]!
-  verificationCode: String!
+  userToLists: [UserToList!]
+  verificationCode: String
 }
 
 """UserToList model"""

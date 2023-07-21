@@ -4,7 +4,7 @@ services:
     image: 'postgres'
     restart: always
     env_file:
-      - .env.development
+      - .env.test
     ports:
       - '5432:5432'
     volumes:
@@ -20,7 +20,7 @@ services:
     build: .
     ports:
       - 8080:8080
-    command: yarn start:dev
+    command: yarn start
     volumes:
       - ./src:/api/src
     restart: always
@@ -31,18 +31,4 @@ services:
       retries: 10
     depends_on:
       db:
-        condition: service_healthy
-
-  frontend:
-    container_name: next-web-app
-    build: ../web-app
-    ports:
-      - 3000:3000
-    command: yarn run dev
-    volumes:
-      - ../web-app/:/app/
-      - /usr/src/app/node_modules
-    restart: always
-    depends_on:
-      'api':
         condition: service_healthy
