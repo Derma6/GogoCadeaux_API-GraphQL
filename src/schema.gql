@@ -87,21 +87,21 @@ input LoginInput {
   password: String!
 }
 
-"""Login response"""
-type LoginResponse {
-  access_token: String!
+"""Login output"""
+type LoginOutput {
+  accessToken: String!
   user: User!
 }
 
 type Mutation {
   createArticle(createArticleInput: CreateArticleInputType!): String!
-  createList(createListInput: CreateListInput!): String!
-  login(loginInput: LoginInput!): LoginResponse!
-  offerArticle(setOfferedArticleInput: SetOfferedArticleInputType!): String!
-  register(registerInput: RegisterInput!): User!
-  removeArticle(id: Int!): String!
-  removeList(id: Int!): String!
-  removeUser: String!
+  createList(createListInput: CreateListInput!): List!
+  deleteArticle(id: Int!): String!
+  deleteList(id: Int!): String!
+  deleteUser: String!
+  login(loginInput: LoginInput!): LoginOutput!
+  offerArticle(setOfferedArticleInput: SetArticleOfferedInputType!): String!
+  register(registerInput: RegisterUserInput!): User!
   updateArticle(updateArticleInput: UpdateArticleInput!): String!
   updateList(updateListInput: UpdateListInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): String!
@@ -119,23 +119,17 @@ type Partner {
 }
 
 type Query {
-  article(id: Int!): Article!
-  findMyLists: [List!]!
+  getAllLists: [List!]!
+  getLoggedUserLists: [List!]!
   list(id: Int!): List!
-  lists: [List!]!
-  profile: User!
-  searchUsersByName(searchTerm: String!): [User!]!
-  user(id: String!): User!
-  users: [User!]!
 }
 
-"""Register input"""
-input RegisterInput {
+"""Register user input"""
+input RegisterUserInput {
   email: String!
   firstName: String!
   lastName: String!
   password: String!
-  photo: String!
 }
 
 enum RoleEnumType {
@@ -144,13 +138,13 @@ enum RoleEnumType {
 }
 
 """Set article is offered input"""
-input SetOfferedArticleInputType {
+input SetArticleOfferedInputType {
   id: Int!
   isOffered: Boolean!
   isOfferedBy: String!
 }
 
-"""Update article input"""
+"""Update articles input"""
 input UpdateArticleInput {
   description: String
   id: Int!
@@ -172,13 +166,12 @@ input UpdateListInput {
   title: String
 }
 
-"""Update user input"""
+"""Update users input"""
 input UpdateUserInput {
   email: String
   firstName: String
   lastName: String
   password: String
-  photo: String
 }
 
 """User model"""
@@ -188,13 +181,13 @@ type User {
   email: String!
   firstName: String!
   id: ID!
-  isVerified: Boolean!
+  isEmailVerified: Boolean!
   lastName: String!
-  photo: String!
+  photo: String
   role: RoleEnumType!
   updatedAt: DateTime!
-  userToLists: [UserToList!]!
-  verificationCode: String!
+  userToLists: [UserToList!]
+  verificationCode: String
 }
 
 """UserToList model"""
